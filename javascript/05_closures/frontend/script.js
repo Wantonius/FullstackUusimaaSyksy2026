@@ -21,7 +21,7 @@ function makeFontSizer() {
 	}
 }
 
-function makeCounter(val) {
+funcxxtion makeCounter(val) {
 	let privateCounter = 0;
 	if(val) {
 		privateCounter = val;
