@@ -61,9 +61,45 @@ const createForm = () => {
 	form.append(typeLabel,typeInput,countLabel,countInput,priceLabel,priceInput,submitButton);
 	form.addEventListener("submit",function(e) {
 		e.preventDefault();
-		//addItem();
+		addItem();
 	})
 	
 	boundingDiv.appendChild(form);
 	root.appendChild(boundingDiv);
+}
+
+const addItem = async () => {
+	const typeInput = document.getElementById("type");
+	const countInput = document.getElementById("count");
+	const priceInput = document.getElementById("price");
+	
+	let item = {
+		"type":typeInput.value,
+		"count":countInput.value,
+		"price":priceInput.value
+	}
+	let url = "/api/shopping";
+	let request = {
+		"method":"POST",
+		"headers": {
+			"Content-Type":"application/json"
+		},
+		"body":JSON.stringify(item)
+	}
+	if(mode) {
+		url = "/api/shopping/"+mode;
+		request.method = "PUT";
+	}
+	const response = await fetch(url,request);
+	if(response.ok) {
+		typeInput.value = "";
+		countInput.value = "";
+		priceInput.value = "";
+		mode = 0;
+		const submitButton = document.getElementById("submitbutton");
+		submitButton.value = "Add";
+		//getList();
+	} else {
+		console.log("Server responded with a status",response.status);
+	}
 }
