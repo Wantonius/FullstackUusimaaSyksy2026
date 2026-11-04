@@ -1,22 +1,79 @@
+import {useState} from 'react';
+import Row from './Row';
+import RemoveRow from './RemoveRow';
+import EditRow from './EditRow';
 import Contact from '../models/Contact';
 
 interface Props {
 	list:Contact[];
 	removeContact(id:number):void;
+	editContact(contact:Contact):void;
+}
+
+interface State {
+	removeIndex:number;
+	editNumber:number;
 }
 
 const ContactList = (props:Props) => {
 	
-	const contactList = props.list.map(contact => {
-		return(
-			<tr key={contact.id}>
-				<td>{contact.firstname}</td>
-				<td>{contact.lastname}</td>
-				<td>{contact.email}</td>
-				<td>{contact.phone}</td>
-				<td><button className="btn btn-danger" onClick={() => props.removeContact(contact.id)}>Remove</button></td>
-			</tr>
-		)
+	const [state,setState] = useState<State>({
+		removeIndex:-1,
+		editIndex:-1
+	})
+	
+	const changeMode = (mode:string,index:number) => {
+		switch(mode) {
+			case "remove": {
+				setState({
+					removeIndex:index,
+					editIndex:-1
+				})
+				return;
+			}
+			case "edit": {
+				setState({
+					removeIndex:-1,
+					editIndex:index
+				})
+				return;
+			} 
+			case "cancel": {
+				setState({
+					removeIndex:-1,
+					editIndex:-1
+				})
+				return;
+			}
+			default:
+				return;
+		}
+	}
+	
+	const removeContact = (id:number) => {
+		props.removeContact(id);
+		changeMode("cancel",0);
+	}
+	
+	const editContact = (contact:Contact) => {
+		props.editContact(contact);
+		changeMode("cancel",0);
+	}
+	
+	const contactList = props.list.map((contact,index) => {
+		if(state.removeIndex === index) {
+			return (
+				<RemoveRow key={contact.id} contact={contact} changeMode={changeMode} removeContact={removeContact}/>
+			)
+		}
+		if(state.editIndex === index) {
+			return(
+				<EditRow key={contact.id} contact={contact} changeMode={changeMode} editContact={editContact}/>
+			)
+		}
+		return (
+			<Row key={contact.id} contact={contact} index={index} changeMode={changeMode}/>
+ 		)
 	})
 	return(
 		<table className="table table-striped">

@@ -2,6 +2,8 @@ import {useState} from 'react';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 import Contact from './models/Contact';
+import Navbar from './components/Navbar';
+import {Routes,Route,Navigate} from 'react-router';
 
 interface State {
 	list:Contact[];
@@ -34,12 +36,30 @@ function App() {
 			}
 		})
 	}
+	
+	const editContact = (contact:Contact) => {
+		for(let i=0;i<state.list.length;i++) {
+			if(contact.id === state.list[i].id) {
+				setState((state) => {
+					const tempList = state.list.toSpliced(i,1,contact);
+					return {
+						...state,
+						list:tempList
+					}
+				})
+			}
+		}
+	}
 
 	return (
 		<>
-			<ContactForm addContact={addContact}/>
+			<Navbar/>
 			<hr/>
-			<ContactList list={state.list} removeContact={removeContact}/>
+			<Routes>
+				<Route path="/" element={<ContactList list={state.list} removeContact={removeContact} editContact={editContact}/>}/>
+				<Route path="/form" element={<ContactForm addContact={addContact}/>}/>
+				<Route path="*" element={<Navigate to="/"/>}/>
+			</Routes>
 		</>
 	)
 }

@@ -76,7 +76,7 @@ const EditRow = (props:Props) => {
 			</td>
 			<td>
 				<button className="btn btn-primary"
-						onClick={() => props.changeMode("cancel",0)>Cancel</button>
+						onClick={() => props.changeMode("cancel",0)}>Cancel</button>
 			</td>
 		</tr>
 	)
