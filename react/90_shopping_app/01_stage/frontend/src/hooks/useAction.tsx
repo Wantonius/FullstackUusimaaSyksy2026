@@ -113,3 +113,5 @@ const useAction = ():{state:State,
 	
 	return {state,add,remove,edit}
 }
+
+export default useAction;
